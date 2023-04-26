@@ -1,4 +1,4 @@
-subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat)
+subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,facemat,normmat)
     implicit none
 
     integer, intent(in) :: imax,jmax
@@ -7,7 +7,9 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat)
                                 M_in
     real(kind=8), intent(out) :: qmat(-1:imax+1,-1:jmax+1,4),fmat(-1:imax+1,-1:jmax+1,4),&
                                 gmat(-1:imax+1,-1:jmax+1,4),wall_ang(1:imax-1,2),alfmat(-1:imax+1,-1:jmax+1)
-    real(kind=8) :: angle,const1,Mnew,angle1,angle2,i1,i2,i3,i4,height,const2
+    real(kind=8),intent(out) :: facemat(1:imax-1,1:jmax-1,8),normmat(1:imax-1,1:jmax-1,4,2)
+    real(kind=8) :: angle,const1,Mnew,angle1,angle2,i1,i2,i3,i4,height,const2,&
+                    recipn,recipw,recips,recipe,mag
 
     const1 = 1.7857142857
     const2 = 0.7142857143
@@ -15,6 +17,72 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat)
     ! Interior Initial
     do i = -1,(imax+1)
         do j = -1,(jmax+1)
+            if ((i>=1 .and. i<imax) .and. (j>=1 .and. j<jmax) ) then
+                facemat(i,j,1) = sqrt((xmatg(i,j+1) - xmatg(i+1,j+1))**2 + (ymatg(i,j+1) - ymatg(i+1,j+1))**2)
+                facemat(i,j,2) = sqrt((xmatg(i,j) - xmatg(i,j+1))**2 + (ymatg(i,j) - ymatg(i,j+1))**2)
+                facemat(i,j,3) = sqrt((xmatg(i+1,j) - xmatg(i,j))**2 + (ymatg(i+1,j) - ymatg(i,j))**2)
+                facemat(i,j,4) = sqrt((xmatg(i+1,j+1) - xmatg(i+1,j))**2 + (ymatg(i+1,j+1) - ymatg(i+1,j))**2)
+                facemat(i,j,5) = (ymatg(i,j+1) - ymatg(i+1,j+1))/(xmatg(i,j+1) - xmatg(i+1,j+1))
+                recipn = -1.0/facemat(i,j,5)
+                facemat(i,j,6) = (ymatg(i,j) - ymatg(i,j+1))/(xmatg(i,j) - xmatg(i,j+1))
+                recipw = -1.0/facemat(i,j,6)
+                facemat(i,j,7) = (ymatg(i+1,j) - ymatg(i,j))/(xmatg(i+1,j) - xmatg(i,j))
+                recips = -1.0/facemat(i,j,7)
+                facemat(i,j,8) = (ymatg(i+1,j+1) - ymatg(i+1,j))/(xmatg(i+1,j+1) - xmatg(i+1,j))
+                recipe = -1.0/facemat(i,j,8)
+                if (facemat(i,j,5) > 0) then
+                    mag = sqrt(1.0+recipn**2)
+                    normmat(i,j,1,1) = -1.0/mag
+                    normmat(i,j,1,2) = -1.0*recipn/mag
+                elseif (facemat(i,j,5) == 0) then
+                    normmat(i,j,1,1) = 0.0
+                    normmat(i,j,1,2) = 1.0
+                else
+                    mag = sqrt(1.0+recipn**2)
+                    normmat(i,j,1,1) = 1.0/mag
+                    normmat(i,j,1,2) = recipn/mag
+                endif
+
+                if (facemat(i,j,6) > 0) then
+                    mag = sqrt(1.0+recipw**2)
+                    normmat(i,j,2,1) = recipw/mag
+                    normmat(i,j,2,2) = 1.0/mag
+                elseif (facemat(i,j,6) == 0) then
+                    normmat(i,j,2,1) = -1.0
+                    normmat(i,j,2,2) = 0.0
+                else
+                    mag = sqrt(1.0+recipw**2)
+                    normmat(i,j,2,1) = -1.0*recipw/mag
+                    normmat(i,j,2,2) = -1.0/mag
+                endif
+
+                if (facemat(i,j,7) > 0) then
+                    mag = sqrt(1.0+recips**2)
+                    normmat(i,j,3,1) = 1.0/mag
+                    normmat(i,j,3,2) = recips/mag
+                elseif (facemat(i,j,6) == 0) then
+                    normmat(i,j,3,1) = 0.0
+                    normmat(i,j,3,2) = -1.0
+                else
+                    mag = sqrt(1.0+recips**2)
+                    normmat(i,j,3,1) = -1.0/mag
+                    normmat(i,j,3,2) = -1.0*recips
+                endif
+
+                if (facemat(i,j,8) > 0) then
+                    mag = sqrt(1.0+recipe**2)
+                    normmat(i,j,4,1) = -1.0*recipe/mag
+                    normmat(i,j,4,2) = -1.0/mag
+                elseif (facemat(i,j,6) == 0) then
+                    normmat(i,j,3,1) = 0.0
+                    normmat(i,j,3,2) = -1.0
+                else
+                    mag = sqrt(1.0+recipe**2)
+                    normmat(i,j,4,1) = recipe/mag
+                    normmat(i,j,4,2) = 1.0/mag
+                endif
+                
+            endif
             angle1 = atan2(ymatg(i+1,j)-ymatg(i,j),xmatg(i+1,j)-xmatg(i,j))
             if ((i>=1 .and. i<imax) .and. j==1) then
                 wall_ang(i,1) = angle1
