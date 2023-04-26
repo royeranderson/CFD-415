@@ -74,8 +74,8 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
                     normmat(i,j,4,1) = -1.0*recipe/mag
                     normmat(i,j,4,2) = -1.0/mag
                 elseif (facemat(i,j,6) == 0) then
-                    normmat(i,j,3,1) = 0.0
-                    normmat(i,j,3,2) = -1.0
+                    normmat(i,j,4,1) = 0.0
+                    normmat(i,j,4,2) = -1.0
                 else
                     mag = sqrt(1.0+recipe**2)
                     normmat(i,j,4,1) = recipe/mag
