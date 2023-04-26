@@ -7,10 +7,10 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     real(kind=8) :: xmatge(-1:imax+2,-1:jmax+2), ymatge(-1:imax+2,-1:jmax+2),&
                     xmatg(-1:imax+2,-1:jmax+2), ymatg(-1:imax+2,-1:jmax+2)
     real(kind=8) :: Amat(-1:imax+1,-1:jmax+1),qmat(-1:imax+1,-1:jmax+1,4),&
-                    Rmat(-1:imax+1,-1:jmax+1),Dmat(-1:imax+1,-1:jmax+1),&
+                    Rmat(1:imax-1,1:jmax-1,4),Dmat(1:imax-1,1:jmax-1,4),&
                     fmat(-1:imax+1,-1:jmax+1,4),gmat(-1:imax+1,-1:jmax+1,4),&
                     BCmat(-1:imax+1,-1:jmax+1,4),wall_ang(1:imax-1,2),alfmat(-1:imax+1,-1:jmax+1),&
-                    facemat(1:imax-1,1,jmax-1,8),normmat(1:imax-1,1,jmax-1,4,2)
+                    facemat(1:imax-1,1:jmax-1,8),normmat(1:imax-1,1:jmax-1,4,2)
 
     real(kind=8) :: delxi, deleta, delx, dely
 
@@ -39,10 +39,13 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     
 
     ! Create a Matrix of Cell Residuals
-    call residuals()
+    call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
 
     ! Create a Matrix of Cell Dissapations
     call dissapation()
+
+    ! Iterate to Solution
+    call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
 
     ! Plot
     call plot(xmatg,ymatg,imax,jmax,qmat)

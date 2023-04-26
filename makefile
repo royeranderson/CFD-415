@@ -13,7 +13,7 @@ EXE   = JST
 .SUFFIXES: .f90 .o
 
 SRC  =					\
-	eulersol.f90 matrices.f90 eulerBCs.f90 RK.f90 cellarea.f90 residuals.f90 dissapation.f90 initial.f90 ghostfill.f90 ghostcell.f90 plot.f90 		\
+	eulersol.f90 matrices.f90 eulerBCs.f90 RK.f90 cellarea.f90 residuals.f90 dissapation.f90 initial.f90 ghostfill.f90 ghostcell.f90 fg.f90 plot.f90 eig.f90 		\
 
 OBJ = $(SRC:.f90=.o)
 

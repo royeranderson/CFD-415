@@ -30,6 +30,7 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
                 recips = -1.0/facemat(i,j,7)
                 facemat(i,j,8) = (ymatg(i+1,j+1) - ymatg(i+1,j))/(xmatg(i+1,j+1) - xmatg(i+1,j))
                 recipe = -1.0/facemat(i,j,8)
+
                 if (facemat(i,j,5) > 0) then
                     mag = sqrt(1.0+recipn**2)
                     normmat(i,j,1,1) = -1.0/mag
@@ -60,20 +61,20 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
                     mag = sqrt(1.0+recips**2)
                     normmat(i,j,3,1) = 1.0/mag
                     normmat(i,j,3,2) = recips/mag
-                elseif (facemat(i,j,6) == 0) then
+                elseif (facemat(i,j,7) == 0) then
                     normmat(i,j,3,1) = 0.0
                     normmat(i,j,3,2) = -1.0
                 else
                     mag = sqrt(1.0+recips**2)
                     normmat(i,j,3,1) = -1.0/mag
-                    normmat(i,j,3,2) = -1.0*recips
+                    normmat(i,j,3,2) = -1.0*recips/mag
                 endif
 
                 if (facemat(i,j,8) > 0) then
                     mag = sqrt(1.0+recipe**2)
                     normmat(i,j,4,1) = -1.0*recipe/mag
                     normmat(i,j,4,2) = -1.0/mag
-                elseif (facemat(i,j,6) == 0) then
+                elseif (facemat(i,j,8) == 0) then
                     normmat(i,j,4,1) = 0.0
                     normmat(i,j,4,2) = -1.0
                 else
@@ -81,7 +82,6 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
                     normmat(i,j,4,1) = recipe/mag
                     normmat(i,j,4,2) = 1.0/mag
                 endif
-                
             endif
             angle1 = atan2(ymatg(i+1,j)-ymatg(i,j),xmatg(i+1,j)-xmatg(i,j))
             if ((i>=1 .and. i<imax) .and. j==1) then
