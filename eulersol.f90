@@ -4,10 +4,10 @@ program eulersol
     character(len=80) :: fname
     integer :: i, j, imax, jmax
     real(kind=8), allocatable :: xmat(:,:), ymat(:,:)
-    real(kind=8) :: M_in,po_inf,rho_inf,T_inf
+    real(kind=8) :: M_in,po_inf,rho_inf,T_inf,a_inf,p_ex,p_inf
 
     ! Read in the Data for the PDE Grid into the Euler Solver
-    fname = 'pde_grid.x'
+    fname = 'pde_grid2.x'
     open(unit=10, file=fname, status='old')
     read(10,*) imax, jmax
     allocate(xmat(imax,jmax))
@@ -20,12 +20,15 @@ program eulersol
     M_in = 0.3
 
     ! Freestream Conditions
-    po_inf = 1.0 !atm
+    p_inf = 1.0 !atm
+    p_ex =  0.93946969 * p_inf
+    po_inf = p_inf*(1.0 + 0.2 * (M_in**2))
     rho_inf = 1.225 !kg/m^3
-    T_inf = 298 ! K
+    T_inf = 288.203 ! K
+    a_inf = sqrt(1.4*T_inf*287)
 
 
     ! Create matrices of Area, q, flux, and dissapation
-    call matrices(xmat,ymat,imax,jmax,M_in,po_inf,rho_inf,T_inf)
+    call matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_inf)
 
 end program eulersol

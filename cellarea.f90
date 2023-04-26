@@ -17,7 +17,5 @@ subroutine cellarea(xmatg,ymatg,imax,jmax,Amat)
             endif
         enddo
     enddo
-    print*,'After Area'
-    print*,xmatg
 
 end subroutine cellarea

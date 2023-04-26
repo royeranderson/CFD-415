@@ -75,7 +75,4 @@ subroutine ghostfill(xmatge,ymatge,xmat,ymat,imax,jmax,delx,dely,xmatg,ymatg)
     ymatg(imax+1,jmax+2) = ymat(imax,jmax)+2*dely
     ymatg(imax+1,jmax+1) = ymat(imax,jmax)+1*dely
 
-    print*,'In Ghostfill'
-    print*,xmatg
-
 end subroutine ghostfill
