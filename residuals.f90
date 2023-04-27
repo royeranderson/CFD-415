@@ -14,14 +14,14 @@ subroutine residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
                 fn = 0.5*(fmat(i,j,k)+fmat(i,j+1,k))
                 gn = 0.5*(gmat(i,j,k)+gmat(i,j+1,k))
 
-                fw = 0.5*(fmat(i-1,j,k)+fmat(i,j,k))
-                gw = 0.5*(gmat(i-1,j,k)+gmat(i,j,k))
+                fw = 0.5*(fmat(i,j,k)+fmat(i-1,j,k))
+                gw = 0.5*(gmat(i,j,k)+gmat(i-1,j,k))
 
-                fs = 0.5*(fmat(i,j-1,k)+fmat(i,j,k))
-                gs = 0.5*(gmat(i,j-1,k)+gmat(i,j,k))
+                fs = 0.5*(fmat(i,j,k)+fmat(i,j-1,k))
+                gs = 0.5*(gmat(i,j,k)+gmat(i,j-1,k))
 
-                fe = 0.5*(fmat(i+1,j,k)+fmat(i,j,k))
-                ge = 0.5*(gmat(i+1,j,k)+gmat(i,j,k))
+                fe = 0.5*(fmat(i,j,k)+fmat(i+1,j,k))
+                ge = 0.5*(gmat(i,j,k)+gmat(i+1,j,k))
 
                 dxn = (facemat(i,j,1)*normmat(i,j,1,2))
                 dyn = (facemat(i,j,1)*normmat(i,j,1,1))
@@ -35,7 +35,7 @@ subroutine residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
                 dye = (facemat(i,j,4)*normmat(i,j,4,2))
                 dxe = (facemat(i,j,4)*normmat(i,j,4,1))
 
-                Rmat(i,j,k) = (fn*dyn - gn*dxn)+(fw*dyw - gn*dxw)+(fs*dys - gs*dxs)+(fe*dye - ge*dxe)
+                Rmat(i,j,k) = (fn*dyn - gn*dxn)+(fw*dyw - gw*dxw)+(fs*dys - gs*dxs)+(fe*dye - ge*dxe)
             enddo
         enddo
     enddo

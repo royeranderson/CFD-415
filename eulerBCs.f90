@@ -21,22 +21,23 @@ subroutine eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_i
 
             theta = atan2(qmat(i,j-rowmove2,3), qmat(i,j-rowmove2,2)) - wall_ang(i,2)
             phi = 2.0*atan2(tan(theta/2.0), real(-1.0,kind=8))
-            r = sqrt(qmat(i,j-rowmove2,2)**2 + qmat(i,j-rowmove2,3)**2)
+            r = sqrt((qmat(i,j-rowmove2,2)**2 + qmat(i,j-rowmove2,3)**2)/qmat(i,j-rowmove2,1)**2)
+            p = ((po_inf*101325.0)*(1.0 + 0.2 * (r**2)))/(rho_inf*a_inf**2)
 
             qmat(i,j,1) = qmat(i,j-rowmove2,1)
             qmat(i,j,2) = r*cos(phi)
             qmat(i,j,3) = r*sin(phi)
             qmat(i,j,4) = qmat(i,j-rowmove2,4)
 
-            fmat(i,j,1) = r*cos(phi)
-            fmat(i,j,2) = (r*cos(phi))**2+const2
-            fmat(i,j,3) = (r**2)*cos(phi)*sin(phi)
-            fmat(i,j,4) = (const1 + 0.5*(r**2) + const2)*r*cos(phi)
+            fmat(i,j,1) = r*cos(phi)*qmat(i,j-rowmove2,1)
+            fmat(i,j,2) = qmat(i,j-rowmove2,1)*(r*cos(phi))**2+p
+            fmat(i,j,3) = (r**2)*cos(phi)*sin(phi)*qmat(i,j-rowmove2,1)
+            fmat(i,j,4) = (2.5*p + .5*qmat(i,j-rowmove2,1)*((r*cos(phi))**2+(r*sin(phi))**2))*r*cos(phi)
 
-            gmat(i,j,1) = r*sin(phi)
-            gmat(i,j,2) = (r**2)*cos(phi)*sin(phi)
-            gmat(i,j,3) = (r*sin(phi))**2+const2
-            gmat(i,j,4) = (const1 + 0.5*(r**2) + const2)*r*sin(phi)
+            gmat(i,j,1) = r*sin(phi)*qmat(i,j-rowmove2,1)
+            gmat(i,j,2) = (r**2)*cos(phi)*sin(phi)*qmat(i,j-rowmove2,1)
+            gmat(i,j,3) = qmat(i,j-rowmove2,1)*(r*sin(phi))**2+p
+            gmat(i,j,4) = (2.5*p + .5*qmat(i,j-rowmove2,1)*((r*cos(phi))**2+(r*sin(phi))**2))*r*sin(phi)
             
         enddo
         rowmove = rowmove+1
@@ -51,22 +52,25 @@ subroutine eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_i
 
             theta = atan2(qmat(i,j+rowmove2,3), qmat(i,j+rowmove2,2)) - wall_ang(i,1)
             phi = 2.0*atan2(tan(theta/2.0), real(-1.0,kind=8))
-            r = sqrt(qmat(i,j+rowmove2,2)**2 + qmat(i,j+rowmove2,3)**2)
+            r = sqrt((qmat(i,j+rowmove2,2)**2 + qmat(i,j+rowmove2,3)**2)/qmat(i,j+rowmove2,1)**2)
+            p = ((po_inf*101325.0)*(1.0 + 0.2 * (r**2)))/(rho_inf*a_inf**2)
 
             qmat(i,j,1) = qmat(i,j+rowmove2,1)
             qmat(i,j,2) = r*cos(phi)
+            print*,i,j
+            print*,qmat(i,j,2)
             qmat(i,j,3) = r*sin(phi)
             qmat(i,j,4) = qmat(i,j+rowmove2,4)
 
-            fmat(i,j,1) = r*cos(phi)
-            fmat(i,j,2) = (r*cos(phi))**2+const2
-            fmat(i,j,3) = (r**2)*cos(phi)*sin(phi)
-            fmat(i,j,4) = (const1 + 0.5*(r**2) + const2)*r*cos(phi)
+            fmat(i,j,1) = r*cos(phi)*qmat(i,j+rowmove2,1)
+            fmat(i,j,2) = qmat(i,j+rowmove2,1)*(r*cos(phi))**2+p
+            fmat(i,j,3) = (r**2)*cos(phi)*sin(phi)*qmat(i,j+rowmove2,1)
+            fmat(i,j,4) = (2.5*p + .5*qmat(i,j+rowmove2,1)*((r*cos(phi))**2+(r*sin(phi))**2))*r*cos(phi)
 
-            gmat(i,j,1) = r*sin(phi)
-            gmat(i,j,2) = (r**2)*cos(phi)*sin(phi)
-            gmat(i,j,3) = (r*sin(phi))**2+const2
-            gmat(i,j,4) = (const1 + 0.5*(r**2) + const2)*r*sin(phi)
+            gmat(i,j,1) = r*sin(phi)*qmat(i,j+rowmove2,1)
+            gmat(i,j,2) = (r**2)*cos(phi)*sin(phi)*qmat(i,j+rowmove2,1)
+            gmat(i,j,3) = qmat(i,j+rowmove2,1)*(r*sin(phi))**2+p
+            gmat(i,j,4) = (2.5*p + .5*qmat(i,j+rowmove2,1)*((r*cos(phi))**2+(r*sin(phi))**2))*r*sin(phi)
             
         enddo
         rowmove = rowmove+1

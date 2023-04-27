@@ -2,7 +2,7 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     implicit none
 
     integer, intent(in) :: imax, jmax
-    integer :: i, j
+    integer :: i, j, iterations
     real(kind=8), intent(in) :: xmat(imax,jmax),ymat(imax,jmax), M_in,po_inf,rho_inf,T_inf,a_inf,p_inf,p_ex
     real(kind=8) :: xmatge(-1:imax+2,-1:jmax+2), ymatge(-1:imax+2,-1:jmax+2),&
                     xmatg(-1:imax+2,-1:jmax+2), ymatg(-1:imax+2,-1:jmax+2)
@@ -36,18 +36,22 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     ! Apply BCs to Q Matrix
     call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
 
-    
-
-    ! Create a Matrix of Cell Residuals
-    call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
-
     ! Create a Matrix of Cell Dissapations
     call dissapation()
 
     ! Iterate to Solution
-    call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
+    ! iterations = 1
+    ! do while (iterations<5)
+    !     !print*,iterations
+    !     call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
+        
+    !     iterations = iterations+1
+    !     !print*,minval(Rmat)
+    ! enddo
+    !print*,iterations
 
     ! Plot
+    print*,M_in
     call plot(xmatg,ymatg,imax,jmax,qmat)
 
 end subroutine matrices

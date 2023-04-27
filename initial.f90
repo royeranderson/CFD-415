@@ -13,6 +13,7 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
 
     const1 = 1.7857142857
     const2 = 0.7142857143
+    
 
     ! Interior Initial
     do i = -1,(imax+1)
@@ -133,5 +134,6 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
         endif
         enddo
     enddo
+    
 
 end subroutine initial
