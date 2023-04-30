@@ -20,7 +20,6 @@ subroutine plot(xmatg,ymatg,imax,jmax,qmat)
     write(10,*) imax+4, jmax+4
     write(10,*) ((xmatg(i,j), i=-1,imax+2), j=-1,jmax+2), &
         ((ymatg(i,j), i=-1,imax+2), j=-1,jmax+2)
-
     close(10)
 
     open(unit=3, file='test.plt', status='replace')
@@ -33,7 +32,7 @@ subroutine plot(xmatg,ymatg,imax,jmax,qmat)
     write(3, *) ((xmatg(i, j), i = 1, imax), j = 1, jmax)
     write(3, *) ((ymatg(i, j), i = 1, imax), j = 1, jmax)
     ! q values
-    write(3, *) ((qmat(i, j, 1), i = 1, imax-1), j = 1, jmax-1)
+    write(3, *) ((qmat(i,j,1), i = 1, imax-1), j = 1, jmax-1)
     write(3, *) ((qmat(i, j, 2), i = 1, imax-1), j = 1, jmax-1)
     write(3, *) ((qmat(i, j, 3), i = 1, imax-1), j = 1, jmax-1)
     write(3, *) ((qmat(i, j, 4), i = 1, imax-1), j = 1, jmax-1)

@@ -9,14 +9,14 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     real(kind=8) :: Amat(-1:imax+1,-1:jmax+1),qmat(-1:imax+1,-1:jmax+1,4),&
                     Rmat(1:imax-1,1:jmax-1,4),Dmat(1:imax-1,1:jmax-1,4),&
                     fmat(-1:imax+1,-1:jmax+1,4),gmat(-1:imax+1,-1:jmax+1,4),&
-                    BCmat(-1:imax+1,-1:jmax+1,4),wall_ang(1:imax-1,2),alfmat(-1:imax+1,-1:jmax+1),&
-                    facemat(1:imax-1,1:jmax-1,8),normmat(1:imax-1,1:jmax-1,4,2)
+                    BCmat(-1:imax+1,-1:jmax+1,4),wall_ang(-1:imax+1,2),alfmat(-1:imax+1,-1:jmax+1),&
+                    facemat(-1:imax+1,-1:jmax+1,8),normmat(-1:imax+1,-1:jmax+1,4,2)
 
     real(kind=8) :: delxi, deleta, delx, dely
 
     ! Find delxi and deleta
-    delxi = 1.0/(imax-1)
-    deleta = 1.0/(jmax-1)
+    delxi = 1.0_8/(imax-1)
+    deleta = 1.0_8/(jmax-1)
     delx = delxi*xmat(imax,1)
     dely = deleta*ymat(1,jmax)
 
@@ -33,25 +33,28 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     ! Create Q-matrix Initial Guess
     call initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,facemat,normmat)
 
-    ! Apply BCs to Q Matrix
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    ! call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
 
-    ! Create a Matrix of Cell Dissapations
-    call dissapation()
+    ! call dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
 
     ! Iterate to Solution
-    ! iterations = 1
-    ! do while (iterations<5)
-    !     !print*,iterations
-    !     call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
+    iterations = 1
+    do while (iterations<100)
+        print*,iterations
+        call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
         
-    !     iterations = iterations+1
-    !     !print*,minval(Rmat)
-    ! enddo
+        iterations = iterations+1
+        ! print*,size(qmat,1)
+        ! print*,size(qmat,2)
+        print*,minval(Rmat(:,:,1))
+        print*,minval(Rmat(:,:,2))
+        print*,minval(Rmat(:,:,3))
+        print*,minval(Rmat(:,:,4))
+        ! print*,qmat(:,:,1)
+    enddo
     !print*,iterations
 
     ! Plot
-    print*,M_in
     call plot(xmatg,ymatg,imax,jmax,qmat)
 
 end subroutine matrices
