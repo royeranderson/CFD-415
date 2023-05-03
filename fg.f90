@@ -7,11 +7,15 @@ subroutine fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     integer :: i,j
     real(kind=8) :: p,M,u,v
 
-    do i = 1,imax-1
-        do j = 1,jmax-1
+    do i = -1,imax+1
+        do j = -1,jmax+1
             u = qmat(i,j,2)/qmat(i,j,1)
             v = qmat(i,j,3)/qmat(i,j,1)
             p = .4_8*(qmat(i,j,4)-.5_8*qmat(i,j,1)*(u**2+v**2))
+
+            if (j==8) then
+                !print*,v
+            endif
 
 
             fmat(i,j,1) = qmat(i,j,2)

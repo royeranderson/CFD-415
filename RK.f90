@@ -15,46 +15,57 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
                     fmatold(-1:imax+1,-1:jmax+1,4),gmatold(-1:imax+1,-1:jmax+1,4)
     integer :: i,j
 
-    CFL = 0.001_8
+    CFL = 0.1_8
 
     ! Calculate the Delta t Matrix
 
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
 
     do i=1,imax-1
         do j=1,jmax-1
             call eig(i,j,imax,jmax,po_inf,rho_inf,a_inf,qmat,normmat,eigen)
             denom = (eigen(1)*facemat(i,j,1))+(eigen(2)*facemat(i,j,2))+(eigen(3)*facemat(i,j,3))+(eigen(4)*facemat(i,j,4))
-            tmat(i,j) = (2.0*Amat(i,j))/denom
+            tmat(i,j) = (2.0_8*Amat(i,j))/denom
         enddo
     enddo
     delt = minval(tmat) * CFL
+    ! print*,delt
 
     ! Begin Runge-Kutta Steps
     al1 = 0.25_8
-    al2 = 0.33333333333333333333_8
+    al2 = (1.0_8)/(3.0_8)
     al3 = 0.5_8
     al4 = 1.0_8
 
     ! Step 1
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    print*,'s1'
+    call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
+
     qmatold = qmat
     fmatold = fmat
     gmatold = gmat
 
-
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
-    call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
     call dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
 
+    print*,'oc'
     do i=1,imax-1
         do j=1,jmax-1
             qmat(i,j,:) = qmatold(i,j,:) - ((al1*delt)/Amat(i,j))*(Rmat(i,j,:)-Dmat(i,j,:))
+            ! if (j==8) then
+            !     print*,i,j
+            !     print*,'R'
+            !     print*,Rmat(i,j,2)
+            !     print*,'term'
+            !     print*,((al1*delt)/Amat(i,j))*(Rmat(i,j,2)-Dmat(i,j,2))
+            ! endif
         enddo
     enddo
 
     ! Step 2
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    print*,'s2'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -65,7 +76,8 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     enddo
 
     ! Step 3
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    print*,'s3'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -76,7 +88,8 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     enddo
 
     ! Step 4
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    print*,'s4'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -91,7 +104,8 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     fmatold = fmat
     gmatold = gmat
 
-    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    print*,'post'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     Rmat = Rmatnew
 

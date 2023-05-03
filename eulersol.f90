@@ -25,17 +25,17 @@ program eulersol
     p_inf = 1.0_8*101325.0_8 !atm
     p_ex =  0.93946969_8 * p_inf ! must be updated with M_in
     p_ex = 1.0_8*101325.0_8
-    po_inf = p_inf*(1.0_8 + 0.2_8 * (M_in**2))
+    po_inf = p_inf*(1.0_8 + 0.2_8 * (M_in**2))**(3.5_8)
     rho_inf = 1.225_8 !kg/m^3
     T_inf = 288.203_8 ! K
     a_inf = sqrt(1.4_8*T_inf*287.0_8)
     p_inf = p_inf/(rho_inf*a_inf**2)
-    print*,p_inf
+    !print*,p_inf
     p_ex = p_ex/(rho_inf*a_inf**2)
 
 
     ! Create matrices of Area, q, flux, and dissapation
     call matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_inf)
-    print*,imax
+    !print*,imax
 
 end program eulersol

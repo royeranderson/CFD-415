@@ -53,52 +53,52 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
             height = 1/(0.5_8*((ymatg(i,jmax)-ymatg(i,1))+(ymatg(i+1,jmax)-ymatg(i+1,1))))
             Mnew = height*M_in
 
-            qmat(i,j,1) = 1.0
-            qmat(i,j,2) = Mnew*cos(angle)
-            qmat(i,j,3) = Mnew*sin(angle)
-            qmat(i,j,4) = const1 + 0.5*(Mnew**2)
+            ! qmat(i,j,1) = 1.0
+            ! qmat(i,j,2) = Mnew*cos(angle)
+            ! qmat(i,j,3) = Mnew*sin(angle)
+            ! qmat(i,j,4) = const1 + 0.5*(Mnew**2)
 
-            fmat(i,j,1) = Mnew*cos(angle)
-            fmat(i,j,2) = (Mnew*cos(angle))**2+const2
-            fmat(i,j,3) = (Mnew**2)*cos(angle)*sin(angle)
-            fmat(i,j,4) = (const1 + 0.5*(Mnew**2) + const2)*Mnew*cos(angle)
+            ! fmat(i,j,1) = Mnew*cos(angle)
+            ! fmat(i,j,2) = (Mnew*cos(angle))**2+const2
+            ! fmat(i,j,3) = (Mnew**2)*cos(angle)*sin(angle)
+            ! fmat(i,j,4) = (const1 + 0.5*(Mnew**2) + const2)*Mnew*cos(angle)
 
-            gmat(i,j,1) = Mnew*sin(angle)
-            gmat(i,j,2) = (Mnew**2)*cos(angle)*sin(angle)
-            gmat(i,j,3) = (Mnew*sin(angle))**2+const2
-            gmat(i,j,4) = (const1 + 0.5*(Mnew**2) + const2)*Mnew*sin(angle)
+            ! gmat(i,j,1) = Mnew*sin(angle)
+            ! gmat(i,j,2) = (Mnew**2)*cos(angle)*sin(angle)
+            ! gmat(i,j,3) = (Mnew*sin(angle))**2+const2
+            ! gmat(i,j,4) = (const1 + 0.5*(Mnew**2) + const2)*Mnew*sin(angle)
 
-            ! qmat(i,j,1) = 1.0_8
-            ! qmat(i,j,2) = M_in
-            ! qmat(i,j,3) = 0.0_8
-            ! qmat(i,j,4) = const1 + 0.5_8*(M_in**2)
+            qmat(i,j,1) = 1.0_8
+            qmat(i,j,2) = M_in
+            qmat(i,j,3) = 0.0_8
+            qmat(i,j,4) = const1 + 0.5_8*(M_in**2)
 
-            ! fmat(i,j,1) = M_in
-            ! fmat(i,j,2) = (M_in)**2+const2
-            ! fmat(i,j,3) = 0.0_8
-            ! fmat(i,j,4) = (const1 + 0.5_8*(M_in**2) + const2)*M_in
+            fmat(i,j,1) = M_in
+            fmat(i,j,2) = (M_in)**2+const2
+            fmat(i,j,3) = 0.0_8
+            fmat(i,j,4) = (const1 + 0.5_8*(M_in**2) + const2)*M_in
 
-            ! gmat(i,j,1) = 0.0_8
-            ! gmat(i,j,2) = 0.0_8
-            ! gmat(i,j,3) = const2
-            ! gmat(i,j,4) = 0.0_8
+            gmat(i,j,1) = 0.0_8
+            gmat(i,j,2) = 0.0_8
+            gmat(i,j,3) = const2
+            gmat(i,j,4) = 0.0_8
 
-            if ((i > imax-1 .or. i<1) .and. (j > jmax-1 .or. j<1)) then
-                qmat(i,j,1) = 0.0
-                qmat(i,j,2) = 0.0
-                qmat(i,j,3) = 0.0
-                qmat(i,j,4) = 0.0
+            ! if ((i > imax-1 .or. i<1) .and. (j > jmax-1 .or. j<1)) then
+            !     qmat(i,j,1) = 0.0
+            !     qmat(i,j,2) = 0.0
+            !     qmat(i,j,3) = 0.0
+            !     qmat(i,j,4) = 0.0
 
-                fmat(i,j,1) = 0.0
-                fmat(i,j,2) = 0.0
-                fmat(i,j,3) = 0.0
-                fmat(i,j,4) = 0.0
+            !     fmat(i,j,1) = 0.0
+            !     fmat(i,j,2) = 0.0
+            !     fmat(i,j,3) = 0.0
+            !     fmat(i,j,4) = 0.0
 
-                gmat(i,j,1) = 0.0
-                gmat(i,j,2) = 0.0
-                gmat(i,j,3) = 0.0
-                gmat(i,j,4) = 0.0
-            endif
+            !     gmat(i,j,1) = 0.0
+            !     gmat(i,j,2) = 0.0
+            !     gmat(i,j,3) = 0.0
+            !     gmat(i,j,4) = 0.0
+            ! endif
 
         ! if (MOD(jmax,2) .eq. 0) then 
         !     qmat(i,jmax/2,2) = Mnew

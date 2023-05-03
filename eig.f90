@@ -18,6 +18,6 @@ subroutine eig(ie,je,imax,jmax,po_inf,rho_inf,a_inf,qmat,normmat,eigen)
     eigen(4) = (abs(u*normmat(ie,je,4,1) + v*normmat(ie,je,4,2)))+c
 
     ! print*,ie,je
-    ! print*,qmat(ie,je,1)
+    !print*,eigen(1)-c
 
 end subroutine

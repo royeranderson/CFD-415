@@ -11,6 +11,7 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
                     fmat(-1:imax+1,-1:jmax+1,4),gmat(-1:imax+1,-1:jmax+1,4),&
                     BCmat(-1:imax+1,-1:jmax+1,4),wall_ang(-1:imax+1,2),alfmat(-1:imax+1,-1:jmax+1),&
                     facemat(-1:imax+1,-1:jmax+1,8),normmat(-1:imax+1,-1:jmax+1,4,2)
+    real(kind=8) :: resplot(199),itplot(199)
 
     real(kind=8) :: delxi, deleta, delx, dely
 
@@ -33,28 +34,34 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
     ! Create Q-matrix Initial Guess
     call initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,facemat,normmat)
 
-    ! call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat)
+    ! call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
 
     ! call dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
 
     ! Iterate to Solution
     iterations = 1
-    do while (iterations<100)
+    do while (iterations<1)
         print*,iterations
         call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
         
+
+        !resplot(iterations) = minval(Rmat)
+        !itplot(iterations) = iterations
+
         iterations = iterations+1
+        print*,iterations
         ! print*,size(qmat,1)
         ! print*,size(qmat,2)
-        print*,minval(Rmat(:,:,1))
-        print*,minval(Rmat(:,:,2))
-        print*,minval(Rmat(:,:,3))
-        print*,minval(Rmat(:,:,4))
+        ! print*,minval(Rmat(:,:,1))
+        ! print*,minval(Rmat(:,:,2))
+        ! print*,minval(Rmat(:,:,3))
+        ! print*,minval(Rmat(:,:,4))
         ! print*,qmat(:,:,1)
     enddo
     !print*,iterations
 
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
     ! Plot
-    call plot(xmatg,ymatg,imax,jmax,qmat)
+    call plot(xmatg,ymatg,imax,jmax,qmat,resplot,itplot)
 
 end subroutine matrices

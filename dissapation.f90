@@ -12,7 +12,7 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
     integer :: i,j
 
     nu2 = 0.0_8
-    nu4 = 0.01_8
+    nu4 = 0.001_8
     !print*,nu4
 
     do i = 1,imax-1
@@ -35,6 +35,10 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
             e4b = eigen(1)
 
             e1 = .5_8*(e1a+e1b)
+            ! print*,'top'
+            ! print*,e1
+            ! print*,e1a
+            ! print*,e1b
             e2 = .5_8*(e2a+e2b)
             e3 = .5_8*(e3a+e3b)
             e4 = .5_8*(e4a+e4b)
@@ -86,22 +90,25 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
             s43 = max(0.0,nu4-s23)
             s44 = max(0.0,nu4-s24)
 
-            D2l(:) = (s21*l1*e1*(qmat(i+1,j,:) - qmat(i,j,:))-s22*l2*e2*(qmat(i-1,j,:)-qmat(i,j,:)))
+            D2l(:) = (s21*l1*e1*(qmat(i+1,j,:) - qmat(i,j,:))-s22*l2*e2*(qmat(i,j,:)-qmat(i-1,j,:)))
             !print*,e1b
-            D2r(:) = (s23*l3*e3*(qmat(i,j+1,:) - qmat(i,j,:))-s24*l4*e4*(qmat(i,j-1,:)-qmat(i,j,:)))
+            D2r(:) = (s23*l3*e3*(qmat(i,j+1,:) - qmat(i,j,:))-s24*l4*e4*(qmat(i,j,:)-qmat(i,j-1,:)))
             D2(:) = D2l + D2r
 
 
             del31 = (qmat(i+2,j,:)-2.0_8*qmat(i+1,j,:)+qmat(i,j,:))-(qmat(i+1,j,:)-2.0_8*qmat(i,j,:)+qmat(i-1,j,:))
-            del32 = (qmat(i,j,:)-2.0_8*qmat(i-1,j,:)+qmat(i-2,j,:))-(qmat(i+1,j,:)-2.0_8*qmat(i,j,:)+qmat(i-1,j,:))
+            del32 = (qmat(i+1,j,:)-2.0_8*qmat(i,j,:)+qmat(i+1,j,:))-(qmat(i,j,:)-2.0_8*qmat(i-1,j,:)+qmat(i-2,j,:))
             del33 = (qmat(i,j+2,:)-2.0_8*qmat(i,j+1,:)+qmat(i,j,:))-(qmat(i,j+1,:)-2.0_8*qmat(i,j,:)+qmat(i,j-1,:))
-            del34 = (qmat(i,j,:)-2.0_8*qmat(i,j-1,:)+qmat(i,j-2,:))-(qmat(i,j+1,:)-2.0_8*qmat(i,j,:)+qmat(i,j-1,:))
-            D4l(:) = (s21*l1*e1*del31-s22*l2*e2*del32)
-            D4r(:) = (s23*l3*e3*del33-s24*l4*e4*del34)
+            del34 = (qmat(i,j+1,:)-2.0_8*qmat(i,j,:)+qmat(i,j-1,:))-(qmat(i,j,:)-2.0_8*qmat(i,j-1,:)+qmat(i,j-2,:))
+            D4l(:) = (s41*l1*e1*del31-s42*l2*e2*del32)
+            D4r(:) = (s43*l3*e3*del33-s44*l4*e4*del34)
             D4(:) = D4l + D4r
+            ! print*,'4'
+            ! print*,D4
 
             Dmat(i,j,:) = D2(:)-D4(:)
-            !print*,D2l
+            ! print*,'tot'
+            ! print*,Dmat(i,j,:)
 
 
         enddo
