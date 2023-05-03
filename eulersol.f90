@@ -17,7 +17,7 @@ program eulersol
     close(10) 
 
     ! Set the desired inlet Mach #
-    M_in = 0.3_8
+    M_in = 0.7_8
 
 
 

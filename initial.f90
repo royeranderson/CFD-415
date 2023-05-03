@@ -1,10 +1,10 @@
-subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,facemat,normmat)
+subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,facemat,normmat,rho_inf,po_inf,a_inf)
     implicit none
 
     integer, intent(in) :: imax,jmax
     integer :: i,j
     real(kind=8), intent(in) :: xmatg(-1:imax+2,-1:jmax+2),ymatg(-1:imax+2,-1:jmax+2),&
-                                M_in
+                                M_in,rho_inf,po_inf,a_inf
     real(kind=8), intent(out) :: qmat(-1:imax+1,-1:jmax+1,4),fmat(-1:imax+1,-1:jmax+1,4),&
                                 gmat(-1:imax+1,-1:jmax+1,4),wall_ang(-1:imax+1,2),alfmat(-1:imax+1,-1:jmax+1)
     real(kind=8),intent(out) :: facemat(-1:imax+1,-1:jmax+1,8),normmat(-1:imax+1,-1:jmax+1,4,2)
@@ -73,15 +73,17 @@ subroutine initial(xmatg,ymatg,imax,jmax,M_in,qmat,gmat,fmat,wall_ang,alfmat,fac
             qmat(i,j,3) = 0.0_8
             qmat(i,j,4) = const1 + 0.5_8*(M_in**2)
 
-            fmat(i,j,1) = M_in
-            fmat(i,j,2) = (M_in)**2+const2
-            fmat(i,j,3) = 0.0_8
-            fmat(i,j,4) = (const1 + 0.5_8*(M_in**2) + const2)*M_in
+            call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
 
-            gmat(i,j,1) = 0.0_8
-            gmat(i,j,2) = 0.0_8
-            gmat(i,j,3) = const2
-            gmat(i,j,4) = 0.0_8
+            ! fmat(i,j,1) = M_in
+            ! fmat(i,j,2) = (M_in)**2+const2
+            ! fmat(i,j,3) = 0.0_8
+            ! fmat(i,j,4) = (const1 + 0.5_8*(M_in**2) + const2)*M_in
+
+            ! gmat(i,j,1) = 0.0_8
+            ! gmat(i,j,2) = 0.0_8
+            ! gmat(i,j,3) = const2
+            ! gmat(i,j,4) = 0.0_8
 
             ! if ((i > imax-1 .or. i<1) .and. (j > jmax-1 .or. j<1)) then
             !     qmat(i,j,1) = 0.0

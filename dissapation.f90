@@ -12,7 +12,8 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
     integer :: i,j
 
     nu2 = 0.0_8
-    nu4 = 0.1_8
+    nu2 = 0.5_8
+    nu4 = 0.01_8
     !print*,nu4
 
     do i = 1,imax-1
@@ -35,10 +36,6 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
             e4b = eigen(1)
 
             e1 = .5_8*(e1a+e1b)
-            ! print*,'top'
-            ! print*,e1
-            ! print*,e1a
-            ! print*,e1b
             e2 = .5_8*(e2a+e2b)
             e3 = .5_8*(e3a+e3b)
             e4 = .5_8*(e4a+e4b)
@@ -73,7 +70,7 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
             call pressure(i,j+2,qmat,rho_inf,a_inf,p4)
             call pressure(i,j+1,qmat,rho_inf,a_inf,p5)
             call pressure(i,j,qmat,rho_inf,a_inf,p6)
-            s23 = nu2*0.5*((abs(p1-2.0_8*p2+p3)/(p1+2.0_8*p2+p3))+(abs(p4-2.0_8*p5+p6)/(p4+2.0_8*p5+p6)))
+            s23 = nu2*0.5_8*((abs(p1-2.0_8*p2+p3)/(p1+2.0_8*p2+p3))+(abs(p4-2.0_8*p5+p6)/(p4+2.0_8*p5+p6)))
             
 
             call pressure(i,j+1,qmat,rho_inf,a_inf,p1)
@@ -82,13 +79,14 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
             call pressure(i,j,qmat,rho_inf,a_inf,p4)
             call pressure(i,j-1,qmat,rho_inf,a_inf,p5)
             call pressure(i,j-2,qmat,rho_inf,a_inf,p6)
-            s24 = nu2*0.5*((abs(p1-2.0_8*p2+p3)/(p1+2.0_8*p2+p3))+(abs(p4-2.0_8*p5+p6)/(p4+2.0_8*p5+p6)))
+            s24 = nu2*0.5_8*((abs(p1-2.0_8*p2+p3)/(p1+2.0_8*p2+p3))+(abs(p4-2.0_8*p5+p6)/(p4+2.0_8*p5+p6)))
             
 
-            s41 = max(0.0,nu4-s21)
-            s42 = max(0.0,nu4-s22)
-            s43 = max(0.0,nu4-s23)
-            s44 = max(0.0,nu4-s24)
+            s41 = max(0.0_8,nu4-s21)
+            s42 = max(0.0_8,nu4-s22)
+            s43 = max(0.0_8,nu4-s23)
+            s44 = max(0.0_8,nu4-s24)
+            print*,s41,s42,s43,s44
 
             D2l(:) = (s21*l1*e1*(qmat(i+1,j,:) - qmat(i,j,:))-s22*l2*e2*(qmat(i,j,:)-qmat(i-1,j,:)))
             !print*,e1b

@@ -53,18 +53,18 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     do i=1,imax-1
         do j=1,jmax-1
             qmat(i,j,:) = qmatold(i,j,:) - ((al1*delt)/Amat(i,j))*(Rmat(i,j,:)-Dmat(i,j,:))
-            ! if (j==8) then
+            ! if (j==9) then
             !     print*,i,j
             !     print*,'R'
-            !     print*,Rmat(i,j,2)
+            !     print*,Rmat(i,j,3)
             !     print*,'term'
-            !     print*,((al1*delt)/Amat(i,j))*(Rmat(i,j,2)-Dmat(i,j,2))
+            !     print*,((al1*delt)/Amat(i,j))*(Rmat(i,j,3)-Dmat(i,j,3))
             ! endif
         enddo
     enddo
 
     ! Step 2
-    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
     ! print*,'s2'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
@@ -76,7 +76,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     enddo
 
     ! Step 3
-    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
     ! print*,'s3'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
@@ -88,7 +88,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     enddo
 
     ! Step 4
-    !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
+    call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
     ! print*,'s4'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)

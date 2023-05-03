@@ -24,8 +24,8 @@ subroutine fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
             fmat(i,j,4) = (((2.5_8*p) + 0.5_8*qmat(i,j,1)*(u**2 + v**2))+p)*u
 
             gmat(i,j,1) = qmat(i,j,3)
-            gmat(i,j,2) = qmat(i,j,2)*u
-            gmat(i,j,3) = qmat(i,j,2)*v + p
+            gmat(i,j,2) = qmat(i,j,3)*u
+            gmat(i,j,3) = qmat(i,j,3)*v + p
             gmat(i,j,4) = (((2.5_8*p) + 0.5_8*qmat(i,j,1)*(u**2 + v**2))+p)*v
         enddo
     enddo

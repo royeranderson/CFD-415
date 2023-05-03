@@ -44,14 +44,21 @@ subroutine residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
                     ! print*,'inres'
                     ! print*,i,j
                     ! print*,fn*dyn
-                    ! print*,dxw
+                    
                     ! print*,fs*dys
+                    
                     ! print*,gn*dxn
+                    
                     ! print*,gs*dxs
+                    
                     ! print*,fw*dyw
+                    
                     ! print*,fe*dye
+                    
                     ! print*,gw*dxw
+                    
                     ! print*,ge*dxe
+
                     ! print*,Rmat(i,j,k)
                 endif
             enddo
