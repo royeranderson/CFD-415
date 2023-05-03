@@ -40,7 +40,7 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
 
     ! Iterate to Solution
     iterations = 1
-    do while (iterations<1)
+    do while (iterations<30000)
         print*,iterations
         call RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dmat,normmat,facemat,alfmat,fmat,gmat,wall_ang,M_in)
         
@@ -52,7 +52,7 @@ subroutine matrices(xmat,ymat,imax,jmax,M_in,po_inf,p_inf,p_ex,rho_inf,T_inf,a_i
         print*,iterations
         ! print*,size(qmat,1)
         ! print*,size(qmat,2)
-        ! print*,minval(Rmat(:,:,1))
+        print*,minval(Rmat(:,:,1))
         ! print*,minval(Rmat(:,:,2))
         ! print*,minval(Rmat(:,:,3))
         ! print*,minval(Rmat(:,:,4))

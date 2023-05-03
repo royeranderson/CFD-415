@@ -12,7 +12,7 @@ subroutine dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
     integer :: i,j
 
     nu2 = 0.0_8
-    nu4 = 0.001_8
+    nu4 = 0.1_8
     !print*,nu4
 
     do i = 1,imax-1

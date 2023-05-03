@@ -8,7 +8,7 @@ subroutine eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_i
                                 alfmat(-1:imax+1,-1:jmax+1),a_inf,p_inf,p_ex,&
                                 normmat(-1:imax+1,-1:jmax+1,4,2)
     integer :: i,j,rowmove,rowmove2
-    real(kind=8) :: const1,const2,Riem1,Riem2,theta,r,phi,p2,c2,q2,q,p,c,rho,M,u,v,s,dot
+    real(kind=8) :: const1,const2,Riem1,Riem2,theta,r,phi,p2,c2,q2,q,p,c,rho,M,u,v,s,dot,proj
 
     const1 = 1.7857142857_8
     const2 = 0.7142857143_8
@@ -45,36 +45,45 @@ subroutine eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_i
 
             u = qmat(i,jmax-1,2)/qmat(i,jmax-1,1)
             v = qmat(i,jmax-1,3)/qmat(i,jmax-1,1)
-            dot = u*normmat(i,jmax,3,2) + v*normmat(i,jmax,3,1)
+            dot = u*(normmat(i,jmax,3,1)) + v*normmat(i,jmax,3,2)
 
             qmat(i,jmax,1) = qmat(i,jmax-1,1)
-            qmat(i,jmax,2) = u
-            qmat(i,jmax,3) = v-2*dot*normmat(i,jmax,3,1)
+            qmat(i,jmax,2) = (u-2.0_8*dot*(normmat(i,jmax,3,1)*(1.0_8)))*qmat(i,jmax,1)
+            qmat(i,jmax,3) = (v-2.0_8*dot*normmat(i,jmax,3,2))*qmat(i,jmax,1)
             qmat(i,jmax,4) = qmat(i,jmax-1,4)
+            ! print*,'rho v',i,jmax
+            ! print*,dot
+            ! print*,normmat(i,jmax,3,2)
+            ! print*,normmat(i,jmax,3,1)
+            ! print*,'v'
+            ! print*,qmat(i,jmax,3)
+            ! print*,'u'
+            ! print*,qmat(i,jmax,2)
+            ! print*,'vold'
+            ! print*,qmat(i,jmax-1,3)
+            ! print*,v
+            ! print*,'uold'
+            ! print*,qmat(i,jmax-1,2)
+            ! print*,u
+            ! print*,'mag'
+            ! print*,sqrt(qmat(i,jmax,3)**2+qmat(i,jmax,2)**2)
+            ! print*,'magold'
+            ! print*,sqrt(qmat(i,jmax-1,3)**2+qmat(i,jmax-1,2)**2)
+            ! print*,''
             
 
             call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
             
             u = qmat(i,jmax-2,2)/qmat(i,jmax-2,1)
             v = qmat(i,jmax-2,3)/qmat(i,jmax-2,1)
-            dot = u*normmat(i,jmax,3,2) + v*normmat(i,jmax,3,1)
-            ! print*,i,jmax-2
-            ! print*,v
-            ! print*,normmat(i,jmax,3,1)
-            ! print*,normmat(i,jmax,3,2)
+            dot = u*normmat(i,jmax,3,1) + v*normmat(i,jmax,3,2)
+
             qmat(i,jmax+1,1) = qmat(i,jmax-2,1)
-            qmat(i,jmax+1,2) = u
-            qmat(i,jmax+1,3) = v-2*dot*normmat(i,jmax,3,2)
+            qmat(i,jmax+1,2) = ((1.0_8*u)-2.0_8*dot*normmat(i,jmax,3,1))*qmat(i,jmax+1,1)
+            qmat(i,jmax+1,3) = ((1.0_8*v)-2.0_8*dot*normmat(i,jmax,3,2))*qmat(i,jmax+1,1)
             qmat(i,jmax+1,4) = qmat(i,jmax-2,4)
-            print*,'rho v',i,jmax
-            print*,dot
-            print*,normmat(i,jmax,3,2)
-            print*,normmat(i,jmax,3,1)
-            print*,'v'
-            print*,qmat(i,jmax,3)
-            print*,'u'
-            print*,qmat(i,jmax,2)
-            print*,sqrt(qmat(i,jmax,3)**2+qmat(i,jmax,2)**2)
+
+            
 
             call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
             
@@ -114,29 +123,23 @@ subroutine eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_i
 
             u = qmat(i,1,2)/qmat(i,1,1)
             v = qmat(i,1,3)/qmat(i,1,1)
-            dot = u*normmat(i,0,1,2) + v*normmat(i,0,1,1)
+            dot = u*(1.0_8)*normmat(i,0,1,1) + v*normmat(i,0,1,2)
 
             qmat(i,0,1) = qmat(i,1,1)
-            qmat(i,0,2) = u
-            qmat(i,0,3) = v-2*dot*normmat(i,0,1,1)
+            qmat(i,0,2) = ((1.0_8*u)-2.0_8*dot*normmat(i,0,1,1))*qmat(i,1,1)
+            qmat(i,0,3) = ((1.0_8*v)-2.0_8*dot*normmat(i,0,1,2))*qmat(i,1,1)
             qmat(i,0,4) = qmat(i,1,4)
-            ! print*,'rho v',i,0
-            ! print*,dot
-            ! print*,normmat(i,0,1,2)
-            ! print*,normmat(i,0,1,1)
-            ! print*,qmat(i,0,3)
-            ! print*,qmat(i,0,2)
-            ! print*,sqrt(qmat(i,0,3)**2+qmat(i,0,2)**2)
+            
 
             call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
             
             u = qmat(i,2,2)/qmat(i,2,1)
             v = qmat(i,2,3)/qmat(i,2,1)
-            dot = u*normmat(i,0,1,2) + v*normmat(i,0,1,1)
+            dot = u*normmat(i,0,1,1) + v*normmat(i,0,1,2)
 
             qmat(i,-1,1) = qmat(i,2,1)
-            qmat(i,-1,2) = u
-            qmat(i,-1,3) = v-2*dot*normmat(i,0,1,1)
+            qmat(i,-1,2) = ((1.0_8*u)-2*dot*normmat(i,0,1,1))*qmat(i,1,1)
+            qmat(i,-1,3) = ((1.0_8*v)-2*dot*normmat(i,0,1,2))*qmat(i,1,1)
             qmat(i,-1,4) = qmat(i,2,4)
 
             call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)

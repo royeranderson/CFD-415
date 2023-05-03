@@ -15,7 +15,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
                     fmatold(-1:imax+1,-1:jmax+1,4),gmatold(-1:imax+1,-1:jmax+1,4)
     integer :: i,j
 
-    CFL = 0.1_8
+    CFL = 1.0_8
 
     ! Calculate the Delta t Matrix
 
@@ -39,7 +39,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
 
     ! Step 1
     call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
-    print*,'s1'
+    ! print*,'s1'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
 
     qmatold = qmat
@@ -49,7 +49,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
     call dissapation(imax,jmax,qmat,facemat,normmat,po_inf,rho_inf,a_inf,Dmat)
 
-    print*,'oc'
+    ! print*,'oc'
     do i=1,imax-1
         do j=1,jmax-1
             qmat(i,j,:) = qmatold(i,j,:) - ((al1*delt)/Amat(i,j))*(Rmat(i,j,:)-Dmat(i,j,:))
@@ -65,7 +65,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
 
     ! Step 2
     !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
-    print*,'s2'
+    ! print*,'s2'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -77,7 +77,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
 
     ! Step 3
     !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
-    print*,'s3'
+    ! print*,'s3'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -89,7 +89,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
 
     ! Step 4
     !call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
-    print*,'s4'
+    ! print*,'s4'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     call residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmatnew)
 
@@ -105,7 +105,7 @@ subroutine RK(imax,jmax,po_inf,rho_inf,a_inf,p_inf,p_ex,T_inf,qmat,Amat,Rmat,Dma
     gmatold = gmat
 
     call eulerBCs(imax,jmax,qmat,gmat,fmat,po_inf,p_inf,p_ex,rho_inf,T_inf,M_in,wall_ang,a_inf,alfmat,normmat)
-    print*,'post'
+    ! print*,'post'
     call fg(imax,jmax,qmat,fmat,gmat,po_inf,rho_inf,a_inf)
     Rmat = Rmatnew
 

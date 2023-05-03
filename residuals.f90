@@ -28,7 +28,7 @@ subroutine residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
                 dyn = (facemat(i,j,1)*normmat(i,j,1,1))
                 
 
-                dxw = (facemat(i,j,2)*normmat(i,j,2,2))
+                dxw = -1.0_8*(facemat(i,j,2)*normmat(i,j,2,2))
                 dyw = (facemat(i,j,2)*normmat(i,j,2,1))
                 
 
@@ -39,17 +39,20 @@ subroutine residuals(imax,jmax,facemat,normmat,fmat,gmat,Rmat)
                 dxe = -1.0_8*(facemat(i,j,4)*normmat(i,j,4,2))
                 dye = (facemat(i,j,4)*normmat(i,j,4,1))
 
-                Rmat(i,j,k) = (fn*dyn - gn*dxn)+(fw*dyw - gw*dxw)+(fs*dys - gs*dxs)+(fe*dye - ge*dxe)
-                if (j==9 .and. k==3) then
+                Rmat(i,j,k) = fn*dyn - gn*dxn+fw*dyw - gw*dxw+fs*dys - gs*dxs+fe*dye - ge*dxe
+                if (j==9 .and. k==3 .and. i==19) then
                     ! print*,'inres'
                     ! print*,i,j
-                    ! print*,dxs
-                    ! print*,dys
-                    ! print*,sqrt(dxs**2+dys**2)
+                    ! print*,fn*dyn
+                    ! print*,dxw
+                    ! print*,fs*dys
+                    ! print*,gn*dxn
+                    ! print*,gs*dxs
+                    ! print*,fw*dyw
+                    ! print*,fe*dye
+                    ! print*,gw*dxw
+                    ! print*,ge*dxe
                     ! print*,Rmat(i,j,k)
-                    ! print*,fs
-                    ! print*,fn
-                    ! print*,gs-gn
                 endif
             enddo
         enddo
